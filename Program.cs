@@ -1,24 +1,3 @@
-int[] MakeBets(string[] playersNames, int[] balance) //опрос всех игроков о их ставке, количество игроков и их балансов должны быть массивы одинакового размера
-{
-    int playersCount = playersNames.Length;
-    int[] betsArray = new int[playersCount];
-    for (int i = 0; i < playersCount; i++)
-    {
-        betsArray[i] = AskForBet(playersNames[i], balance[i]);
-    }
-    return betsArray;
-}
-
-int AskForBet(string playerName, int playerBalance) //метод опроса отдельного игрока, переспрашивает пока ставка не будет больше 0 и меньше баланса.
-{
-    while (true)
-    {
-        int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку:");
-        if (betAmount <= playerBalance && betAmount > 0) return betAmount;
-        else Console.WriteLine($"Ставка не может быть меньше 1 или больше ваших фишек.");
-    }
-}
-
 int RequestNumber(string words) // ввод чисел с проверкой
 {
     while (true)
@@ -44,6 +23,27 @@ int RequestNumber(string words) // ввод чисел с проверкой
 }
 
 Console.Write(Greetings());
+
+int[] MakeBets(string[] playersNames, int[] balance) //опрос всех игроков о их ставке, количество игроков и их балансов должны быть массивы одинакового размера
+{
+    int playersCount = playersNames.Length;
+    int[] betsArray = new int[playersCount];
+    for (int i = 0; i < playersCount; i++)
+    {
+        betsArray[i] = AskForBet(playersNames[i], balance[i]);
+    }
+    return betsArray;
+}
+
+int AskForBet(string playerName, int playerBalance) //метод опроса отдельного игрока, переспрашивает пока ставка не будет больше 0 и меньше баланса.
+{
+    while (true)
+    {
+        int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку:");
+        if (betAmount <= playerBalance && betAmount > 0) return betAmount;
+        else Console.WriteLine($"Ставка не может быть меньше 1 или больше ваших фишек.");
+    }
+}
 
 
 // int[] Mixing() // Перетасовка колоды карт, метод возвращает массив с 52-мя значениями карт,
