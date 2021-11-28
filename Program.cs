@@ -1,4 +1,40 @@
-﻿   
+﻿int[] MakeBets (string[] playersNames, int[] balance) //опрос всех игроков о их ставке, количество игроков и их балансов должны быть массивы одинакового размера Автор: Александр Сибирко
+{
+    int playersCount = playersNames.Length;
+    int[] betsArray = new int [playersCount];
+    for (int i = 0 ;i < playersCount; i++)
+    {
+        betsArray[i] = AskForBet(playersNames[i], balance[i]);
+    }
+    return betsArray;
+}
+
+int AskForBet (string playerName, int playerBalance) //метод опроса отдельного игрока, переспрашивает пока ставка не будет введена числом и меньше баланса. Автор: Александр Сибирко
+{
+    int betAmount = 0;
+    bool betmade = false;
+    Console.Write($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку:");
+    while(!betmade)
+    {
+        if(Int32.TryParse(Console.ReadLine(), out betAmount))
+        {
+            if (betAmount <= playerBalance)
+            {
+                betmade = true;
+            }
+            else
+            {
+                Console.Write($"У вас нету {betAmount} фишек, сделайте ставку не более {playerBalance}:");
+            }
+        }
+        else
+        {
+            Console.Write($"{playerName} напишите вашу ставку целым числом:");
+        }
+    }
+    return betAmount;
+}
+
 int[] Mixing() // Перетасовка колоды карт, метод возвращает массив с 52-мя значениями карт,
 {              // размещенных на случайных позициях 
     int[] deck = new int[52];
