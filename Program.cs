@@ -11,7 +11,7 @@
 (string[] playersNames, int deckLength, int[] balance) Greetings()
 {
     Console.Write("Введите имена игроков через запятую: ");
-    string[] playersNames = Console.ReadLine().Split(',', ' ');
+    string[] playersNames = Console.ReadLine().Split(new char[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries); //Прошлый код давал ошибку вводя строку "Маша, Паша, Саша", получали массив {"Маша","","Паша","","Cаша"}. Теперь можно вводить как "Маша Паша Саша" так и "Маша, Паша,Саша" и т.п.
     int[] balance = new int[playersNames.Length];
     int deckLength = RequestNumber("Укажите начальный баланс игорков: ");
     for (int i = 0; i < balance.Length; i++)
@@ -22,8 +22,39 @@
     return (playersNames, deckLength, balance);
 }
 
-Console.Write(Greetings());
+int[] MakeBets(string[] playersNames, int[] balance) //опрос всех игроков о их ставке, количество игроков и их балансов должны быть массивы одинакового размера
+{
+    int playersCount = playersNames.Length;
+    int[] betsArray = new int[playersCount];
+    for (int i = 0; i < playersCount; i++)
+    {
+        betsArray[i] = AskForBet(playersNames[i], balance[i]);
+    }
+    return betsArray;
+}
 
+int AskForBet(string playerName, int playerBalance) //метод опроса отдельного игрока, переспрашивает пока ставка не будет больше 0 и меньше баланса.
+{
+    while (true)
+    {
+        int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку: ");
+        if (betAmount <= playerBalance && betAmount > 0) return betAmount;
+        else Console.WriteLine($"Ставка не может быть меньше 1 или больше ваших фишек.");
+    }
+}
+
+// Сonsole.Write(Greetings()); - строка, которая показывает (System.String[], 6, System.Int32[]) ? Зачем ?
+
+//Код игры
+void RunGame()
+{
+    (string[] playersNames, int deckLength, int[] balance) = Greetings(); //передаём результат кортежа в переменные
+    int[] bets = MakeBets(playersNames, balance); //заполняем массив принятых ставок
+    // Далее создание перетасованной колоды???
+    // int[] suffledDeck = МетодСозданияПеретасованнойКолоды
+}
+
+RunGame(); //заупскаем игру
 
 // int[] Mixing() // Перетасовка колоды карт, метод возвращает массив с 52-мя значениями карт,
 // {              // размещенных на случайных позициях 
