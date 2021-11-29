@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////////////////////
 // Измененный метод по другому алгоритму
 // Входящие аргументы: numCards- количество карт в колоде, numDecks - количество колод;
 // Метод возвращает массив deck содержащий, в зависимости от типа колоды, перемешанные значения карт 
@@ -11,18 +11,15 @@ int[] Mixing(int numCards, int numDecks)
 
     if (numCards == 52) fromValueCard = 2; else fromValueCard = 6;
 
-    for (int k = 0; k < 4 * numDecks; k++)
+    for (int k = 0; k < 4 * numDecks; k++) // создаёт колоду
     { for (int n = fromValueCard; n < 15; n++) { deck[count] = n; count += 1; } }
 
-    for (int i = 0; i < deck.Length; i++)
+    for (int i = 0; i < deck.Length; i++) // перемешивает колоду
     { temp = deck[i]; j = new Random().Next(i, deck.Length); deck[i] = deck[j]; deck[j] = temp; }
 
     return deck;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 int RequestNumber(string words) // ввод чисел с проверкой
 {
@@ -34,18 +31,18 @@ int RequestNumber(string words) // ввод чисел с проверкой
     }
 }
 
-(string[] playersNames, int deckLength, int[] balance) Greetings()
+(string[] playersNames, int numDecks, int[] balance) Greetings()
 {
     Console.Write("Введите имена игроков через запятую: ");
-    string[] playersNames = Console.ReadLine().Split(new char[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries); //Прошлый код давал ошибку вводя строку "Маша, Паша, Саша", получали массив {"Маша","","Паша","","Cаша"}. Теперь можно вводить как "Маша Паша Саша" так и "Маша, Паша,Саша" и т.п.
+    string[] playersNames = Console.ReadLine().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries); //Прошлый код давал ошибку вводя строку "Маша, Паша, Саша", получали массив {"Маша","","Паша","","Cаша"}. Теперь можно вводить как "Маша Паша Саша" так и "Маша, Паша,Саша" и т.п.
     int[] balance = new int[playersNames.Length];
-    int deckLength = RequestNumber("Укажите начальный баланс игорков: ");
+    int numDecks = RequestNumber("Укажите начальный баланс игорков: ");
     for (int i = 0; i < balance.Length; i++)
     {
-        balance[i] = deckLength;
+        balance[i] = numDecks;
     }
-    deckLength = RequestNumber("Сколько колод возьмём: ");
-    return (playersNames, deckLength, balance);
+    numDecks = RequestNumber("Сколько колод возьмём: ");
+    return (playersNames, numDecks, balance);
 }
 
 int[] MakeBets(string[] playersNames, int[] balance) //опрос всех игроков о их ставке, количество игроков и их балансов должны быть массивы одинакового размера
@@ -65,23 +62,23 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     {
         int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку: ");
         if (betAmount <= playerBalance && betAmount > 0) return betAmount;
-        else Console.WriteLine($"Ставка не может быть меньше 1 или больше ваших фишек.");
+        else Console.WriteLine($"Ставка не может быть меньше 1 или больше количества ваших фишек.");
     }
 }
-
-// Сonsole.Write(Greetings()); - строка, которая показывает (System.String[], 6, System.Int32[]) ? Зачем ?
 
 //Код игры
 void RunGame()
 {
-    (string[] playersNames, int deckLength, int[] balance) = Greetings(); //передаём результат кортежа в переменные
+    (string[] playersNames, int numDecks, int[] balance) = Greetings(); //передаём результат кортежа в переменные
     int[] bets = MakeBets(playersNames, balance); //заполняем массив принятых ставок
-    // Далее создание перетасованной колоды???
-    // int[] suffledDeck = МетодСозданияПеретасованнойКолоды
+    int[] deck = Mixing(52, numDecks);
 }
 
-RunGame(); //заупскаем игру
+RunGame(); //запускаем игру
 
+
+
+// ---------Первичный код Рустема-----------------
 // int[] Mixing() // Перетасовка колоды карт, метод возвращает массив с 52-мя значениями карт,
 // {              // размещенных на случайных позициях 
 //     int[] deck = new int[52];
