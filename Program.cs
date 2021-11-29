@@ -1,4 +1,30 @@
-﻿int RequestNumber(string words) // ввод чисел с проверкой
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Измененный метод по другому алгоритму
+// Входящие аргументы: numCards- количество карт в колоде, numDecks - количество колод;
+// Метод возвращает массив deck содержащий, в зависимости от типа колоды, перемешанные значения карт 
+// для "русской колоды" состоящей из 36 карт значения от 6 до 14, с 6 до 10 по номиналу, 11 - туз, 12, 13, 14 соответственно валет, дама, король
+// для стандартной или "французской" колоды значения карт от 2 до 14, с 2 до 10 по номиналу, 11 - туз, 12, 13, 14 соответственно валет, дама, король
+
+int[] Mixing(int numCards, int numDecks)
+{
+    int j, temp, fromValueCard; int count = 0; int[] deck = new int[numCards * numDecks];
+
+    if (numCards == 52) fromValueCard = 2; else fromValueCard = 6;
+
+    for (int k = 0; k < 4 * numDecks; k++)
+    { for (int n = fromValueCard; n < 15; n++) { deck[count] = n; count += 1; } }
+
+    for (int i = 0; i < deck.Length; i++)
+    { temp = deck[i]; j = new Random().Next(i, deck.Length); deck[i] = deck[j]; deck[j] = temp; }
+
+    return deck;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+int RequestNumber(string words) // ввод чисел с проверкой
 {
     while (true)
     {
