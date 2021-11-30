@@ -62,7 +62,7 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     {
         int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку: ");
         if (betAmount <= playerBalance && betAmount > 0) return betAmount;
-        else Console.WriteLine($"Ставка не может быть меньше 1 или больше количества ваших фишек.");
+        else Console.WriteLine($"Ставка не может быть меньше 1 или больше количества фишек, имеющихся у вас");
     }
 }
 
@@ -88,6 +88,74 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     return (deck, playersDecks, croupierDeck);
 }
 
+// Метод подсчёта наибольшей суммыочков с заданных карт, на входе массив карт заданных как числа (2-14)
+// Для определения блэкджека от суммы 21, результат при блэкджеке =99 (недостижимый простым подсчётом карт)
+int CardsScore(int[] cardsArray)
+{
+    int len = cardsArray.Length;
+    int aceCount = 0;
+    int totalScore = 0;
+    for (int i = 0; i < len; i++)
+    {
+        switch (cardsArray[i])
+        {
+            case < 11:                               //для карт 2-10 по номиналу
+                totalScore += cardsArray[i];
+                break;
+            case 11:
+                totalScore += cardsArray[i];
+                aceCount++;
+                break;
+
+            case > 11:                               //все карты с картинками как 10
+                totalScore += 10;
+                break;
+        }
+    }
+    if (totalScore == 21 && len == 2) {return 99;}  //указатель для отличия БлэкДжека от просто суммы 21
+    while (totalScore > 21 && aceCount > 0)         //если по итогам получили перебор за каждого туза вычитам 10 (начинаем считать его как 1), пока не закончатся тузы или не окажемся ниже 21
+    {
+        totalScore -= 10;
+        aceCount--;
+    }
+    return totalScore;
+}
+
+//метод возвращает изменения баланса игрока, по очкам их карт и величине ставки
+//переборы игрока сюда не попадают (их отлавливаем в процессе игры и сразу вызываем balance[i] += BalanceChangeValue(-1,bets[i]));
+int CompareCardsResult(int playerScoreValue, int dealerScoreValue) //-1 проигра, 0 - ничья, 1 выиграл, 2 выиграл по блэкджеку
+{
+    //условие ничьей
+    if (dealerScoreValue == playerScoreValue) return 0; //сумма карт поровну (при этом никто не перебрал)
+    //условия победы
+    if (playerScoreValue == 99) {return 2;} //победа по блэкджеку (у же не ничья т.е. у крупье не блэкджек)
+    if ((dealerScoreValue > 21 && dealerScoreValue != 99) || playerScoreValue > dealerScoreValue) return 1; //простая победа, у дилера перебор или у игрока сумма выше
+    //все остальные варианты проигрыш
+    return -1; //у крупье больше чем у игрока (нету переборов и блэджеков и т.п.)
+}
+
+//метод изменения баланса игрока
+//при переборе в процессе добора вызываем BalanceChange(-1,betValue), при этом обнуляем положение ставки
+//для всех не выбывших игроков у которых в Bets != 0, производим BalanceChange(CompareCardsResult(playerScore,dealerScore),betValue);
+int BalanceChangeValue(int WinLossValue, int betValue)
+{
+    switch (WinLossValue)
+    {
+        case -1:
+            return -betValue; //результат проигрыш
+        case 0:
+            return 0;         //результат ничья
+        case 1:
+            return betValue;  //результат выигрышь 1 к 1  
+        case 2:         
+            return betValue * 3 / 2;    //результат выигрышь 3 к 2 (по Блэкджеку), копейки остаются у казино
+        default:
+            return 0; //результат которого не должно быть!
+    }
+}
+
+
+
 //Код игры
 void RunGame()
 {
@@ -96,6 +164,7 @@ void RunGame()
     int[] deck = Mixing(52, numDecks);
     int nextCard = deck.Length - 1;
     (int[,] playersDecks, int[] croupierDeck, nextCard) = SetUp(playersNames, deck, nextCard);
+
 }
 
 RunGame(); //запускаем игру
