@@ -62,7 +62,7 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     {
         int betAmount = RequestNumber($"{playerName} у вас {playerBalance} фишек, делайте вашу ставку: ");
         if (betAmount <= playerBalance && betAmount > 0) return betAmount;
-        else Console.WriteLine($"Ставка не может быть меньше 1 или больше количества ваших фишек.");
+        else Console.WriteLine($"Ставка не может быть меньше 1 или больше количества фишек, имеющихся у вас");
     }
 }
 
