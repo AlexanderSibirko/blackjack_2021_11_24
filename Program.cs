@@ -66,27 +66,26 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     }
 }
 
-(int[,], int[]) SetUp(string[] playersNames, int[] deck) // создает двумерный массив, в котором каждая строка - массив карт игроков, столбец - значение карты
+(int[,] playersDecks, int[] croupierDeck, int nextCard) SetUp(string[] playersNames, int[] deck, int nextCard) // создает двумерный массив, в котором каждая строка - массив карт игроков, столбец - значение карты
 {
-    int playersCount = playersNames.Length, deckCount = deck.Length - 1;
+    int playersCount = playersNames.Length;
     int[,] playersDecks = new int[playersCount, 11]; // массивы колод игроков и крупье, максимальный размер - 11, 
     int[] croupierDeck = new int[11]; // исходя их худшей вариации минимальных карт: 1+1+1+1+2+2+2+2+3+3+3=21
-                                      
+
     for (int i = 0; i < playersCount; i++) // первые две карты игроков
     {
-        for (int j = 0; j < 2; j++)
-        {
-            if (deck[deckCount] == 0) { j--; deckCount--; } // проверка - если при втором раунде используем ту же колоду
-            else { playersDecks[i, j] = deck[deckCount]; deck[deckCount] = 0; deckCount--; }
-        }
+        for (int j = 0; j < 2; j++) playersDecks[i, j] = deck[nextCard--];
     }
 
-    for (int i = 0; i < 2; i++) // первые две карты крупье
-    {
-        if (deck[deckCount] == 0) { i--; deckCount--; }
-        else { croupierDeck[i] = deck[deckCount]; deck[deckCount] = 0; deckCount--; }
-    }
-    return (playersDecks, croupierDeck);
+    for (int i = 0; i < 2; i++) croupierDeck[i] = deck[nextCard--]; // первые две карты крупье
+
+    return (playersDecks, croupierDeck, nextCard);
+}
+
+(int[] deck, int[,] playersDecks, int[] croupierDeck) Round(int[] deck, int[,] playersDecks, int[] croupierDeck, string[] playersNames)
+{
+
+    return (deck, playersDecks, croupierDeck);
 }
 
 //Код игры
@@ -95,11 +94,11 @@ void RunGame()
     (string[] playersNames, int numDecks, int[] balance) = Greetings(); //передаём результат кортежа в переменные
     int[] bets = MakeBets(playersNames, balance); //заполняем массив принятых ставок
     int[] deck = Mixing(52, numDecks);
-    (int[,] playersDecks, int[] croupierDeck) = SetUp(playersNames, deck);
+    int nextCard = deck.Length - 1;
+    (int[,] playersDecks, int[] croupierDeck, nextCard) = SetUp(playersNames, deck, nextCard);
 }
 
 RunGame(); //запускаем игру
-
 
 
 // ---------Первичный код Рустема-----------------
