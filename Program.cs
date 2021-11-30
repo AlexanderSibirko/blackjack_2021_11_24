@@ -122,7 +122,7 @@ int CardsScore(int[] cardsArray)
 }
 
 //метод возвращает изменения баланса игрока, по очкам их карт и величине ставки
-//переборы игрока сюда не попадают
+//переборы игрока сюда не попадают (их отлавливаем в процессе игры и сразу вызываем balance[i] += BalanceChangeValue(-1,bets[i]));
 int CompareCardsResult(int playerScoreValue, int dealerScoreValue) //-1 проигра, 0 - ничья, 1 выиграл, 2 выиграл по блэкджеку
 {
     //условие ничьей
@@ -137,7 +137,7 @@ int CompareCardsResult(int playerScoreValue, int dealerScoreValue) //-1 прои
 //метод изменения баланса игрока
 //при переборе в процессе добора вызываем BalanceChange(-1,betValue), при этом обнуляем положение ставки
 //для всех не выбывших игроков у которых в Bets != 0, производим BalanceChange(CompareCardsResult(playerScore,dealerScore),betValue);
-int BalanceChange(int WinLossValue, int betValue)
+int BalanceChangeValue(int WinLossValue, int betValue)
 {
     switch (WinLossValue)
     {
@@ -164,6 +164,7 @@ void RunGame()
     int[] deck = Mixing(52, numDecks);
     int nextCard = deck.Length - 1;
     (int[,] playersDecks, int[] croupierDeck, nextCard) = SetUp(playersNames, deck, nextCard);
+
 }
 
 RunGame(); //запускаем игру
