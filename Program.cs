@@ -88,6 +88,40 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     return (deck, playersDecks, croupierDeck);
 }
 
+// Метод подсчёта наибольшей суммыочков с заданных карт, на входе массив карт заданных как числа (2-14)
+// Для определения блэкджека от суммы 21, результат при блэкджеке =99 (недостижимый простым подсчётом карт)
+int CardsScore(int[] cardsArray)
+{
+    int len = cardsArray.Length;
+    int aceCount = 0;
+    int totalScore = 0;
+    for (int i = 0; i < len; i++)
+    {
+        switch (cardsArray[i])
+        {
+            case < 11:                               //для карт 2-10 по номиналу
+                totalScore += cardsArray[i];
+                break;
+            case 11:
+                totalScore += cardsArray[i];
+                aceCount++;
+                break;
+
+            case > 11:                               //все карты с картинками как 10
+                totalScore += 10;
+                break;
+        }
+    }
+    if (totalScore == 21 && len == 2) {return 99;}  //указатель для отличия БлэкДжека от просто суммы 21
+    while (totalScore > 21 && aceCount > 0)         //если по итогам получили перебор за каждого туза вычитам 10 (начинаем считать его как 1), пока не закончатся тузы или не окажемся ниже 21
+    {
+        totalScore -= 10;
+        aceCount--;
+    }
+    return totalScore;
+}
+
+
 //Код игры
 void RunGame()
 {
