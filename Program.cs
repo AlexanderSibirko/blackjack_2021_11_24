@@ -121,6 +121,40 @@ int CardsScore(int[] cardsArray)
     return totalScore;
 }
 
+//метод возвращает изменения баланса игрока, по очкам их карт и величине ставки
+//переборы игрока сюда не попадают
+int CompareCardsResult(int playerScoreValue, int dealerScoreValue) //-1 проигра, 0 - ничья, 1 выиграл, 2 выиграл по блэкджеку
+{
+    //условие ничьей
+    if (dealerScoreValue == playerScoreValue) return 0; //сумма карт поровну (при этом никто не перебрал)
+    //условия победы
+    if (playerScoreValue == 99) {return 2;} //победа по блэкджеку (у же не ничья т.е. у крупье не блэкджек)
+    if ((dealerScoreValue > 21 && dealerScoreValue != 99) || playerScoreValue > dealerScoreValue) return 1; //простая победа, у дилера перебор или у игрока сумма выше
+    //все остальные варианты проигрыш
+    return -1; //у крупье больше чем у игрока (нету переборов и блэджеков и т.п.)
+}
+
+//метод изменения баланса игрока
+//при переборе в процессе добора вызываем BalanceChange(-1,betValue), при этом обнуляем положение ставки
+//для всех не выбывших игроков у которых в Bets != 0, производим BalanceChange(CompareCardsResult(playerScore,dealerScore),betValue);
+int BalanceChange(int WinLossValue, int betValue)
+{
+    switch (WinLossValue)
+    {
+        case -1:
+            return -betValue; //результат проигрыш
+        case 0:
+            return 0;         //результат ничья
+        case 1:
+            return betValue;  //результат выигрышь 1 к 1  
+        case 2:         
+            return betValue * 3 / 2;    //результат выигрышь 3 к 2 (по Блэкджеку), копейки остаются у казино
+        default:
+            return 0; //результат которого не должно быть!
+    }
+}
+
+
 
 //Код игры
 void RunGame()
