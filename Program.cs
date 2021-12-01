@@ -82,12 +82,6 @@ int AskForBet(string playerName, int playerBalance) //метод опроса о
     return (playersDecks, croupierDeck, nextCard);
 }
 
-(int[] deck, int[,] playersDecks, int[] croupierDeck) Round(int[] deck, int[,] playersDecks, int[] croupierDeck, string[] playersNames)
-{
-
-    return (deck, playersDecks, croupierDeck);
-}
-
 // Метод подсчёта наибольшей суммыочков с заданных карт, на входе массив карт заданных как числа (2-14)
 // Для определения блэкджека от суммы 21, результат при блэкджеке =99 (недостижимый простым подсчётом карт)
 int CardsScore(int[] cardsArray)
@@ -112,7 +106,7 @@ int CardsScore(int[] cardsArray)
                 break;
         }
     }
-    if (totalScore == 21 && len == 2) {return 99;}  //указатель для отличия БлэкДжека от просто суммы 21
+    if (totalScore == 21 && len == 2) { return 99; }  //указатель для отличия БлэкДжека от просто суммы 21
     while (totalScore > 21 && aceCount > 0)         //если по итогам получили перебор за каждого туза вычитам 10 (начинаем считать его как 1), пока не закончатся тузы или не окажемся ниже 21
     {
         totalScore -= 10;
@@ -128,7 +122,7 @@ int CompareCardsResult(int playerScoreValue, int dealerScoreValue) //-1 прои
     //условие ничьей
     if (dealerScoreValue == playerScoreValue) return 0; //сумма карт поровну (при этом никто не перебрал)
     //условия победы
-    if (playerScoreValue == 99) {return 2;} //победа по блэкджеку (у же не ничья т.е. у крупье не блэкджек)
+    if (playerScoreValue == 99) { return 2; } //победа по блэкджеку (у же не ничья т.е. у крупье не блэкджек)
     if ((dealerScoreValue > 21 && dealerScoreValue != 99) || playerScoreValue > dealerScoreValue) return 1; //простая победа, у дилера перебор или у игрока сумма выше
     //все остальные варианты проигрыш
     return -1; //у крупье больше чем у игрока (нету переборов и блэджеков и т.п.)
@@ -147,14 +141,34 @@ int BalanceChangeValue(int WinLossValue, int betValue)
             return 0;         //результат ничья
         case 1:
             return betValue;  //результат выигрышь 1 к 1  
-        case 2:         
+        case 2:
             return betValue * 3 / 2;    //результат выигрышь 3 к 2 (по Блэкджеку), копейки остаются у казино
         default:
             return 0; //результат которого не должно быть!
     }
 }
 
+(int[] deck, int[,] playersDecks, int[] croupierDeck, int nextCard) Round(int[] deck, int[,] playersDecks, int[] croupierDeck, string[] playersNames, int nextCard)
+{
+    for (int i = 0; i < playersNames.Length; i++)
+    {
+        (playersDecks, deck, nextCard) = GamePlayer(i, playersDecks, deck, nextCard);
+    }
+    (croupierDeck, deck, nextCard) = GameCroupier(croupierDeck, deck, nextCard);
+    return (deck, playersDecks, croupierDeck, nextCard);
+}
 
+(int[,] playersDecks, int[] deck, int nextCard) GamePlayer(int playerIndex, int[,] playersDecks, int[] deck, int nextCard)
+{
+
+    return (playersDecks, deck, nextCard);
+}
+
+(int[] croupierDeck, int[] deck, int nextCard) GameCroupier(int[] croupierDeck, int[] deck, int nextCard)
+{
+
+    return (croupierDeck, deck, nextCard);
+}
 
 //Код игры
 void RunGame()
