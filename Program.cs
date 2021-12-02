@@ -1,4 +1,5 @@
-﻿int[] Mixing(int numCards, int numDecks)
+﻿
+int[] Mixing(int numCards, int numDecks)
 {
     int j, temp, fromValueCard; int count = 0; int[] Deck = new int[numCards * numDecks];
 
