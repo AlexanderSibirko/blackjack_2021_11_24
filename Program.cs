@@ -1,4 +1,4 @@
-int[] Mixing(int numCards, int numDecks)
+﻿int[] Mixing(int numCards, int numDecks)
 {
     int j, temp, fromValueCard; int count = 0; int[] Deck = new int[numCards * numDecks];
 
@@ -18,21 +18,26 @@ int RequestNumber(string words) // ввод чисел с проверкой
     while (true)
     {
         Console.Write(words);
-        if (int.TryParse(Console.ReadLine(), out int num))
-        {
-            if (num > 0) return num;
-            else Console.WriteLine("Вы ввели значение меньше нуля, попробуйте еще разок!");
-        }
+        if (int.TryParse(Console.ReadLine(), out int num) && num > 0) return num;
         else Console.WriteLine("Что-то вы не то ввели, давайте-ка снова.");
+    }
+}
+
+string[] AskNames()
+{
+    while (true)
+    {
+        Console.Write("Введите имена игроков через запятую: ");
+        string names = Console.ReadLine() + ",Крупье";
+        string[] playersNames = names.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries); //Прошлый код давал ошибку вводя строку "Маша, Паша, Саша", получали массив {"Маша","","Паша","","Cаша"}. Теперь можно вводить как "Маша Паша Саша" так и "Маша, Паша,Саша" и т.п.
+        if (playersNames.Length > 8) Console.WriteLine("За нашим столиком всего 7 кресел, может кто-то подождёт остальных в баре?");
+        else return playersNames;
     }
 }
 
 (string[] playersNames, int numDecks, int[] balance) Greetings() // Здесь нужно проверить достаточность колод в зависимости от числа игроков
 {
-    Console.Write("Введите имена игроков через запятую: ");
-    string[] playersNames = Console.ReadLine().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries); //Прошлый код давал ошибку вводя строку "Маша, Паша, Саша", получали массив {"Маша","","Паша","","Cаша"}. Теперь можно вводить как "Маша Паша Саша" так и "Маша, Паша,Саша" и т.п.
-    Array.Resize(ref playersNames, playersNames.Length + 1); playersNames[playersNames.Length - 1] = "Крупье";
-
+    string[] playersNames = AskNames();
     int[] balance = new int[playersNames.Length - 1];
     int numDecks = RequestNumber("Укажите начальный баланс игроков: ");
     for (int i = 0; i < balance.Length; i++)
@@ -127,7 +132,7 @@ int[] Round(int[] deck, int[,] playersDecks, string[] playersNames, int nextCard
         (int playerCardsScore, nextCard) = GamePlayer(i, playersNames, playersDecks, deck, nextCard);
         playersCardsScores[i] = playerCardsScore;
         Console.Clear();
-        if (i < playersDecks.GetLength(0)-1) Console.WriteLine("ПЕРЕХОД ХОДА");
+        if (i < playersDecks.GetLength(0) - 1) Console.WriteLine("ПЕРЕХОД ХОДА");
         Thread.Sleep(1000);
     }
     return (playersCardsScores);
